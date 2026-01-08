@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-gt(ur1oor=@l$z2))bt7ub@2)&sz@-el^9=(i7l*n=k2x@j1=4'
+SECRET_KEY = 'django-insecure-i#s-v_va=1jyiyekd$-#hs^w6i%&ad(mm!6o6_b$5bh3iz%@+1'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,18 +37,23 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    'rest_framework',
-    'corsheaders',
-
-    'tracker',
+    'rest_framework',# Add Django REST framework
+    'corsheaders',# Add CORS headers
+    'tracker',#
 ]
 
-CORS_ALLOWED_ORIGINS = ['http://localhost:5173/']
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5174",
+]
+
 
 MIDDLEWARE = [
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+
+    'corsheaders.middleware.CorsMiddleware', # Add CORS middleware
+
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -111,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Europe/Dublin'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
