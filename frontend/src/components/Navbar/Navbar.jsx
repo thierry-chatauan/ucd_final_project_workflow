@@ -20,10 +20,8 @@ function Navbar({ isAdmin = false }) {
 
         <div className="navbar-nav me-auto">
           <NavLink to="/home" className="nav-link">Home</NavLink>
-
-          <NavLink to="/create-new-job" className="nav-link">
-            Create New Job
-          </NavLink>
+          <NavLink to="/create-new-job" className="nav-link">Create New Job</NavLink>
+          <NavLink to="/profile" className="nav-link">Profile</NavLink>
         </div>
 
         <button className="btn btn-outline-light" onClick={handleLogout}>

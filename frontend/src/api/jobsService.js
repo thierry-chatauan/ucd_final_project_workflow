@@ -23,3 +23,18 @@ export function deleteJob(jobId) {
   });
 
 }
+export function EditJobPage(jobId){
+  return apiClient(`/api/jobs/${jobId}/`, {
+    method: "PUT",
+})}
+
+
+export function updateJob(jobId, payload) {
+  return apiClient(`/api/jobs/${jobId}/`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+} 
+export function getJob(jobId) {
+  return apiClient(`/api/jobs/${jobId}/`);
+} 
