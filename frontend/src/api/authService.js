@@ -49,3 +49,24 @@ export async function signup({ username, email, password }) {
     body: JSON.stringify({ username, email, password }),
   });
 }
+
+export function getProfile() {
+  return apiClient("/api/profile/");
+}
+
+export function updateProfile(payload) {
+  // payload example: { email: "...", avatar: "avatar3" }
+  // backend expects { email, avatar } (email maps to user.email)
+  return apiClient("/api/profile/", {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function changePassword(current_password, new_password) {
+  return apiClient("/api/change-password/", {
+    method: "POST",
+    body: JSON.stringify({ current_password, new_password }),
+  });
+}
+

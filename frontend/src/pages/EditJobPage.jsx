@@ -18,6 +18,19 @@ function EditJobPage() {
   const [customer, setCustomer] = useState("");
   const [drawingNumber, setDrawingNumber] = useState("");
   const [statusValue, setStatusValue] = useState("in_progress");
+  
+  // Novos estados para datas
+  const [createdAt, setCreatedAt] = useState("");
+  const [finishedAt, setFinishedAt] = useState("");
+
+  // Função auxiliar para formatar data da API para o input datetime-local
+  const formatForInput = (dateString) => {
+    if (!dateString) return "";
+    const d = new Date(dateString);
+    if (isNaN(d.getTime())) return "";
+    // Retorna YYYY-MM-DDTHH:mm
+    return d.toISOString().slice(0, 16);
+  };
 
   useEffect(() => {
     (async () => {
@@ -28,7 +41,6 @@ function EditJobPage() {
         const meData = await getMe();
         setMe(meData);
 
-        // ✅ client-side guard: only admin can access edit UI
         if (!meData.is_superuser) {
           navigate("/home", { replace: true });
           return;
@@ -36,11 +48,16 @@ function EditJobPage() {
 
         const job = await getJob(id);
 
-        setOperator(job.operator ?? "");
+        setOperator(job.operator?.username ?? "");
         setMachine(job.machine ?? "");
         setCustomer(job.customer ?? "");
         setDrawingNumber(job.drawing_number ?? "");
         setStatusValue(job.status ?? (job.finished_at ? "finished" : "in_progress"));
+        
+        // Formata as datas para os inputs
+        setCreatedAt(formatForInput(job.created_at));
+        setFinishedAt(formatForInput(job.finished_at));
+        
       } catch (err) {
         if (String(err.message).toLowerCase().includes("401")) {
           logout();
@@ -56,26 +73,22 @@ function EditJobPage() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-
     try {
       setSaving(true);
       setError("");
 
       await updateJob(id, {
-        operator,
+        operator_username: operator, // Enviando o nome se a API permitir
         machine,
         customer,
         drawing_number: drawingNumber,
         status: statusValue,
+        created_at: createdAt || null,
+        finished_at: finishedAt || null
       });
 
       navigate("/home");
     } catch (err) {
-      if (String(err.message).toLowerCase().includes("401")) {
-        logout();
-        navigate("/", { replace: true });
-        return;
-      }
       setError(err.message || "Failed to update job");
     } finally {
       setSaving(false);
@@ -83,89 +96,91 @@ function EditJobPage() {
   }
 
   return (
-    <div className="min-vh-100 bg-dark text-white">
+    <div
+      className="min-vh-100"
+      style={{
+        background: "radial-gradient(1200px 600px at 20% 0%, rgba(59,130,246,.12), transparent 60%), radial-gradient(900px 500px at 80% 10%, rgba(16,185,129,.10), transparent 55%), #f8fafc",
+      }}
+    >
       <Navbar isAdmin={me?.is_superuser} />
 
-      {/* fixes table/header hiding if Navbar is fixed-top */}
-      <div style={{ paddingTop: 70 }}>
-        <div className="container py-4" style={{ maxWidth: 700 }}>
-          <h2 className="mb-4">Edit Job #{id}</h2>
+      <div style={{ paddingTop: 124 }} className="d-lg-none" />
+      <div style={{ paddingTop: 84 }} className="d-none d-lg-block" />
 
-          {loading && <p>Loading...</p>}
-          {error && <div className="alert alert-danger">{error}</div>}
-
-          {!loading && (
-            <form onSubmit={handleSubmit}>
-              <div className="mb-3">
-                <label className="form-label">Operator</label>
-                <input
-                  className="form-control"
-                  value={operator}
-                  onChange={(e) => setOperator(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="mb-3">
-                <label className="form-label">Machine</label>
-                <input
-                  className="form-control"
-                  value={machine}
-                  onChange={(e) => setMachine(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="mb-3">
-                <label className="form-label">Customer</label>
-                <input
-                  className="form-control"
-                  value={customer}
-                  onChange={(e) => setCustomer(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="mb-3">
-                <label className="form-label">Drawing Number</label>
-                <input
-                  className="form-control"
-                  value={drawingNumber}
-                  onChange={(e) => setDrawingNumber(e.target.value)}
-                  required
-                />
-              </div>
-
-              {/* Only include if you have status field in the model */}
-              <div className="mb-4">
-                <label className="form-label">Status</label>
-                <select
-                  className="form-select"
-                  value={statusValue}
-                  onChange={(e) => setStatusValue(e.target.value)}
-                >
-                  <option value="in_progress">In progress</option>
-                  <option value="finished">Finished</option>
-                </select>
-              </div>
-
-              <div className="d-flex gap-2">
-                <button className="btn btn-warning" type="submit" disabled={saving}>
-                  {saving ? "Saving..." : "Save changes"}
-                </button>
-
-                <button
-                  type="button"
-                  className="btn btn-outline-light"
-                  onClick={() => navigate("/home")}
-                  disabled={saving}
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          )}
+      <div className="container py-4" style={{ maxWidth: 820 }}>
+        {/* Header simplificado para focar nos campos */}
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <h2 className="fw-bold text-dark m-0">Edit Job <span className="text-muted small">#{id}</span></h2>
+          <button className="btn btn-light border rounded-pill shadow-sm" onClick={() => navigate("/home")}>Back</button>
         </div>
+
+        {loading ? (
+          <div className="text-center py-5"><div className="spinner-border text-primary" /></div>
+        ) : (
+          <div className="card border-0 shadow-sm rounded-4" style={{ backgroundColor: "rgba(255,255,255,.88)", backdropFilter: "blur(8px)" }}>
+            <div className="card-body p-4 p-md-5">
+              <form onSubmit={handleSubmit}>
+                <div className="row g-4">
+                  
+                  {/* ... Campos anteriores (Machine, Customer, Drawing) permanecem iguais ... */}
+                  <div className="col-md-6">
+                    <label className="form-label fw-semibold">Machine</label>
+                    <input className="form-control rounded-pill mb-2" value={machine} onChange={e => setMachine(e.target.value)} required />
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label fw-semibold">Customer</label>
+                    <input className="form-control rounded-pill" value={customer} onChange={e => setCustomer(e.target.value)} required />
+                  </div>
+
+                  <div className="col-12">
+                    <label className="form-label fw-semibold">Drawing Number</label>
+                    <input className="form-control rounded-pill mb-2" value={drawingNumber} onChange={e => setDrawingNumber(e.target.value)} required />
+                  </div>
+
+                  {/* NOVOS CAMPOS: DATA E HORA */}
+                  <div className="col-md-6">
+                    <label className="form-label fw-semibold text-primary"><i className="bi bi-calendar-event me-2"></i>Start Date & Time</label>
+                    <input 
+                      type="datetime-local" 
+                      className="form-control border-0 shadow-sm rounded-pill mb-3"
+                      style={{ backgroundColor: "#fff" }}
+                      value={createdAt}
+                      onChange={(e) => setCreatedAt(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="col-md-6">
+                    <label className="form-label fw-semibold text-success"><i className="bi bi-calendar-check me-2"></i>Finish Date & Time</label>
+                    <input 
+                      type="datetime-local" 
+                      className="form-control border-0 shadow-sm rounded-pill"
+                      style={{ backgroundColor: "#fff" }}
+                      value={finishedAt}
+                      onChange={(e) => setFinishedAt(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Status */}
+                  <div className="col-12">
+                    <label className="form-label fw-semibold">Status</label>
+                    <select className="form-select rounded-pill" value={statusValue} onChange={e => setStatusValue(e.target.value)}>
+                      <option value="in_progress">In progress</option>
+                      <option value="finished">Finished</option>
+                    </select>
+                  </div>
+
+                </div>
+
+                <div className="d-flex gap-2 justify-content-end mt-5">
+                  <button type="button" className="btn btn-light rounded-pill px-4" onClick={() => navigate("/home")}>Cancel</button>
+                  <button type="submit" className="btn btn-warning rounded-pill px-5 fw-bold" disabled={saving}>
+                    {saving ? "Saving..." : "Update Job"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
