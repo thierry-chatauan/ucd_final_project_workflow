@@ -2,6 +2,7 @@ const API_BASE_URL = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
 
 
 export async function apiClient(endpoint, options = {}) {
+  console.log("API_BASE_URL:", API_BASE_URL);
   const token = localStorage.getItem("accessToken");
 
   const headers = {
@@ -26,4 +27,5 @@ export async function apiClient(endpoint, options = {}) {
   }
 
   return response.json();
+  
 }
