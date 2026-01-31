@@ -17,7 +17,7 @@ class JobsModelTest(TestCase):
             drawing_number="DES-001"
         )
         self.assertEqual(job.status, "in_progress")
-        self.assertIsNone(job.finished_at) # Garante que finished_at nasce vazio
+        self.assertIsNone(job.finished_at) # finished_at should be None on creation
 
     def test_job_str_representation(self):
         """Test the __str__ method of the Jobs model"""
@@ -39,5 +39,5 @@ class UserProfileModelTest(TestCase):
         
         user.delete()
         
-        # O resultado esperado é que não exista mais perfil para esse usuário
+        #
         self.assertEqual(UserProfile.objects.count(), 0)
