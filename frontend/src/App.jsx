@@ -7,11 +7,13 @@ import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import SignUpPage from "./pages/SignUpPage";
 import EditJobPage from "./pages/EditJobPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 
 
 function App() {
   return (
     <Routes>
+      
       <Route path="/" element={<LoginPage />} />
 
       <Route path="/signup" element={<SignUpPage />} />
@@ -26,7 +28,8 @@ function App() {
 
       <Route path="/change-password" element={<PrivateRoute><ChangePasswordPage /></PrivateRoute>} />
 
-      
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+
     </Routes>
   );
 }

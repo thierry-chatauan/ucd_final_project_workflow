@@ -1,6 +1,8 @@
 from django.utils import timezone
 from django.contrib.auth.models import User
 
+from django.shortcuts import render
+
 from rest_framework import status
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -20,6 +22,8 @@ from .serializers import (
 class JobsViewSet(ModelViewSet):
     serializer_class = JobsSerializer
     permission_classes = [IsAuthenticated, JobPermission]
+
+    
 
     def get_queryset(self):
         qs = Jobs.objects.select_related("operator", "operator__profile").order_by("-created_at")
@@ -122,3 +126,6 @@ def change_password(request):
     serializer.is_valid(raise_exception=True)
     serializer.save()
     return Response({"detail": "Password updated successfully."}, status=status.HTTP_200_OK)
+
+def frontend(request):
+    return render(request, "index.html")

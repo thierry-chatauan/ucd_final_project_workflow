@@ -100,7 +100,7 @@ function LoginPage() {
                 >
                   <i className="bi bi-cpu text-warning"></i>
                 </div>
-                <div className="mx-2"> 
+                <div className="mx-2">
                   <div className="fw-semibold text-dark">Machine tracking</div>
                   <div className="text-muted small">
                     Know exactly which machine is working on which order at any moment.
@@ -191,12 +191,14 @@ function LoginPage() {
 
                 <form onSubmit={handleSubmit}>
                   <div className="mb-3">
-                    <label className="form-label fw-semibold text-dark">Username</label>
+                    <label htmlFor="username" className="form-label fw-semibold text-dark">Username</label>
                     <div className="input-group">
                       <span className="input-group-text bg-white border-0 shadow-sm rounded-start-pill">
                         <i className="bi bi-person"></i>
                       </span>
                       <input
+                        id="username"
+                        name="username"
                         className="form-control border-0 shadow-sm rounded-end-pill"
                         style={{ backgroundColor: "rgba(255,255,255,.95)" }}
                         value={username}
@@ -210,12 +212,14 @@ function LoginPage() {
                   </div>
 
                   <div className="mb-4">
-                    <label className="form-label fw-semibold text-dark">Password</label>
+                    <label htmlFor="password" className="form-label fw-semibold text-dark">Password</label>
                     <div className="input-group">
                       <span className="input-group-text bg-white border-0 shadow-sm rounded-start-pill">
                         <i className="bi bi-lock"></i>
                       </span>
                       <input
+                        id="password"
+                        name="password"
                         type="password"
                         className="form-control border-0 shadow-sm rounded-end-pill"
                         style={{ backgroundColor: "rgba(255,255,255,.95)" }}
@@ -227,6 +231,26 @@ function LoginPage() {
                         disabled={loading}
                       />
                     </div>
+                  </div>
+
+                  <div className="d-flex justify-content-end mb-3">
+                    <Link
+                      to="/forgot-password"
+                      className="text-decoration-none"
+                      style={{ color: "#0f172a", opacity: 0.75, fontSize: 13 }}
+                    >
+                      <span
+                        className="px-3 py-1 rounded-pill d-inline-flex align-items-center gap-2 shadow-sm"
+                        style={{
+                          backgroundColor: "rgba(255,255,255,.75)",
+                          border: "1px solid rgba(15,23,42,.10)",
+                          backdropFilter: "blur(8px)",
+                        }}
+                      >
+                        <i className="bi bi-shield-lock"></i>
+                        Forgot password?
+                      </span>
+                    </Link>
                   </div>
 
                   <button
