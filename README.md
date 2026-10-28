@@ -9,7 +9,7 @@ The app allows users to create and complete jobs, while managers can view, edit,
 
 - **Frontend:** React (with Vite)
 - **Backend:** Django (Python)
-- **Database:** PostgreSQL (hosted on Render)
+- **Database:** PostgreSQL (hosted on Supabase)
 - **Hosting:** Render (for both frontend and backend)
 
 ---
